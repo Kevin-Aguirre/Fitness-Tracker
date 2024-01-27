@@ -1,6 +1,8 @@
 import React, { useEffect } from "react"
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom'
 
+import Login from "./components/Login.js"
+import Register from "./components/Register.js";
 import Navbar from "./components/Navbar.js";
 import HomePage from "./components/pages/HomePage.js"
 import AddWorkout from "./components/pages/AddWorkout.js"
@@ -102,7 +104,13 @@ function App() {
     <Router>
       <Navbar/>
       <Routes>
-          <Route 
+        <Route
+          path="/"
+          element={
+            <Login/>
+          }
+        />
+          {/* <Route 
             path="/" 
             element={
               <HomePage
@@ -153,7 +161,7 @@ function App() {
             }
           />
           <Route path="/progress-stats" element={<ProgressStats/>}/>
-          <Route path="/progress-visualize" element={<ProgressVisualize/>}/>
+          <Route path="/progress-visualize" element={<ProgressVisualize/>}/> */}
 
       </Routes>
     </Router>
