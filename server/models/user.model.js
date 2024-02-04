@@ -2,11 +2,14 @@ const mongoose = require('mongoose');
 
 const SetSchema = new mongoose.Schema({
     reps: Number,
-    weight: Number
+    weight: Number,
+    time: Number,
+    distance: Number,
 });
 
 const ExerciseSchema = new mongoose.Schema({
     name: String,
+    type: String,
     sets: [SetSchema]
 });
 

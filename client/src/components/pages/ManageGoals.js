@@ -114,8 +114,9 @@ function makeGoalStatement(goal) {
 
 
 export default function ManageGoalsPage (props) {
+    console.log(props);
 
-    const goalElements = props.goals.map((goal, index) => {
+    const goalElements = props.goals.goals.map((goal, index) => {
         const isFulfillied = isGoalFulfilled(goal, props.workouts)
         let background;
         switch (isFulfillied) {

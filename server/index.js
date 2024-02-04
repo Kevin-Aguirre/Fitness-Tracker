@@ -35,6 +35,7 @@ function authenticateToken(req, res, next) {
 }
 
 app.use('/api/workouts', authenticateToken)
+app.use('/api/goals', authenticateToken)
 
 app.post('/api/register', async (req, res) => {
     // console.log(req.body);
@@ -98,6 +99,7 @@ app.get('/api/workouts', async (req, res) => {
 })
 
 app.post('/api/workouts', async (req, res) => {
+    console.log(req.body);
     const userId = req.userId
 
     try { 
@@ -113,6 +115,39 @@ app.post('/api/workouts', async (req, res) => {
         res.json({status: "error", error: 'Could not Create Workout'})
     }
 
+})
+
+app.get('/api/goals', async (req, res) => {
+
+    try {
+        const user = await User.findById(req.userId); // Use userId set by authenticateToken
+        if (!user) {
+            return res.status(404).json({ status: 'error', error: 'User not found' });
+        }
+
+        res.json({ status: 'ok', goals: user.goals});
+    } catch (error) {
+
+        res.status(500).json({ status: 'error', error: 'Internal server error' });
+    }
+
+})
+
+app.post('/api/goals', async (req, res) => {
+    const userId = req.userId
+
+    try { 
+        const user = await User.findById(userId)
+        if (!user) {
+            return res.status(404).json({ status: 'error', error: 'User Not Found'})
+        }
+        console.log(req.body);
+        user.goals.push(req.body)
+        await user.save()
+        res.json({status: 'ok'}) 
+    } catch (err) {
+        res.json({status: "error", error: 'Could not Create Workout'})
+    }
 })
 
 app.put('/api/workouts/:workoutId', async (req, res) => {

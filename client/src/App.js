@@ -18,6 +18,7 @@ import "./index.css"
 
 function App() {
   const [workouts, setWorkouts] = useState([])
+  const [goals, setGoals] = useState([])
 
   useEffect(() => {
     async function fetchWorkouts() {
@@ -29,7 +30,6 @@ function App() {
                 'Authorization': `Bearer ${token}` // Including the token in the header
             }
         });
-        console.log(response);
 
         if (response.ok) {
             const fetchedWorkouts = await response.json(); // this wo rks
@@ -40,23 +40,31 @@ function App() {
             alert('something went wrong')
         }
     }
+
+    async function fetchGoals() {
+      const token = localStorage.getItem('token'); // Retrieve the stored token
+      const response = await fetch('http://localhost:8080/api/goals', {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}` // Including the token in the header
+          }
+      });
+
+      if (response.ok) {
+          const fetchedGoals = await response.json(); // this wo rks
+          setGoals(fetchedGoals)
+
+      } else {
+          alert('something went wrong')
+      }
+    }
   
     fetchWorkouts();
+    fetchGoals();
   }, []);
 
-  const [goals, setGoals] = React.useState(() => (
-    JSON.parse(localStorage.getItem('goals')) || []
-  ))
 
-  useEffect(() => {
-      localStorage.setItem('workouts', JSON.stringify(workouts))
-      // console.log("use effect workouts", workouts)
-  }, [workouts])
-
-  useEffect(() => {
-    localStorage.setItem('goals', JSON.stringify(goals))
-    // console.log("goals: ", goals)
-  }, [goals])
 
 
   // workout functions
@@ -82,6 +90,20 @@ function App() {
       body: JSON.stringify(newWorkout)
     });
 
+  }
+
+  // goal functions
+  async function addGoal(goalData) {
+    const token = localStorage.getItem('token') 
+
+    const response = await fetch('http://localhost:8080/api/goals', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(goalData)
+    })
   }
 
 
@@ -117,12 +139,6 @@ function App() {
     setWorkouts({})
   }
 
-  // goal functions
-  function addGoal(goalData) {
-    setGoals(prevGoals => ([
-      ...prevGoals, goalData
-    ]))
-  }
 
   function removeGoal(goalIndex) {
     setGoals(prevGoals => {

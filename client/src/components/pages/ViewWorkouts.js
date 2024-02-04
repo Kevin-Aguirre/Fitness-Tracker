@@ -83,8 +83,7 @@ export default function ViewWorkoutsPage (props) {
                                                 default:
                                                     setElem = (
                                                         <div key={setIndex} className="view--set">
-                                                            <div className="view--reps">Reps: {set.reps}</div>
-                                                            <div className="view--weight">Weight: {set.weight}</div>
+                                                            Something Went Wrong.
                                                         </div>
                                                     )
                                                     break;
