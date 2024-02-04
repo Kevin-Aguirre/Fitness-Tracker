@@ -40,7 +40,6 @@ body {
 
 }
 
-
 .parent {
   height: 100%;
   width: 100%;
@@ -515,4 +514,25 @@ body {
   background-color: rgb(238, 111, 111);
   margin: 10px 0px;
   padding: 20px 0px;
+}
+
+.form {
+  background-color: lightgray;
+  display: flex;
+  margin: 50px auto;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  padding: 4
+  0px;
+  flex-direction: column;
+}
+
+.title {
+  font-size: 60px;
+  margin: 20px;
+}
+
+.field {
+  width: 100%;
 }

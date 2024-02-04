@@ -231,7 +231,6 @@ export default function AddWorkoutPage (props) {
     
     
     function handleSubmit(event) {
-        console.log(formData)
         event.preventDefault();
 
         // Check for validation errors
@@ -247,7 +246,6 @@ export default function AddWorkoutPage (props) {
         }
 
         formData.exercises.forEach((exercise, index) => {
-            console.log(exercise.name)
             if (exercise.name === "") {
                 errors[`name_${index}`] = "Name must not be empty";
             } else if (nameSet.has(exercise.name)) {
@@ -272,6 +270,7 @@ export default function AddWorkoutPage (props) {
             };
 
             props.addWorkout(formData.date, newWorkout);
+            console.log('finished adding')
             setFormData({ date: "", exercises: [] }); // Reset form
             setValidationErrors({}); // Clear validation errors
         } else {

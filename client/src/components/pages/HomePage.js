@@ -1,7 +1,7 @@
 import React from "react";
 
 export default function (props) {
-
+    console.log(props);
     function findRecentConsecutiveEntries(datesObject) {
         // Convert object keys to date array and sort in descending order
         if (Object.keys(datesObject).length === 0) {
@@ -62,8 +62,15 @@ export default function (props) {
         return currentStreak;
     }
 
-    const val = findRecentConsecutiveEntries(props.workouts)
-    const val2 = findConsecutiveWeeklyEntries(props.workouts)
+    let val 
+    let val2
+    if (props.workouts) {
+        val = findRecentConsecutiveEntries(props.workouts)
+        val2 = findConsecutiveWeeklyEntries(props.workouts)
+    } else {
+        val = "ERROR"
+        val2 = "ERROR"
+    }
 
     return (
         <div className="parent">

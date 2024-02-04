@@ -8,13 +8,36 @@ function Register () {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     
-    function handleSubmit(event) {
+    async function handleSubmit(event) {
         event.preventDefault();
-        console.log('submitted')
+        const response = await fetch('http://localhost:8080/api/register', {
+            method: "POST",
+            headers: {
+              'Content-Type' : 'application/json'
+            },
+            body: JSON.stringify({
+              name,
+              email,
+              password
+            })
+        })
+      
+        const data = await response.json()
+        console.log(data);
+
+        if (data.status === 'ok') {
+            alert("Account successfully created.")
+            navigate('/login')
+        } else {
+            if (data.error === "Duplicate email") {
+                alert("This email is already in use: " + email)
+            }
+        }
+    
     }
 
     function goToLogin() {
-        console.log('went to login');
+        navigate('/login')
     }
     return (
         <div>

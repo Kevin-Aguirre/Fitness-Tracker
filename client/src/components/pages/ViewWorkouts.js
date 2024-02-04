@@ -21,6 +21,8 @@ export default function ViewWorkoutsPage (props) {
         return `${dates[aDateArr[1]]} ${aDateArr[2]}, ${aDateArr[0]}`
     }
 
+    console.log(props.workouts);
+
 
     const workoutElements = Object.entries(props.workouts).map(([date, workoutSessions]) => (
         <div key={date} className="workouts">

@@ -1,5 +1,6 @@
 import React, { useEffect } from "react"
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom'
+import { Navigate } from "react-router-dom";
 
 import Login from "./components/Login.js"
 import Register from "./components/Register.js";
@@ -37,17 +38,78 @@ function App() {
 
   // workout functions
   
-  function addWorkout(date, workoutSession) {
+
+  // change this to post
+  async function addWorkout(date, workoutSession) {
     console.log(workoutSession)
-    setWorkouts(prevWorkouts => {
-        const updatedWorkouts = { ...prevWorkouts };
-        if (!updatedWorkouts[date]) {
-            updatedWorkouts[date] = [];
-        }
-        updatedWorkouts[date].push(workoutSession);
-        return updatedWorkouts;
+
+    const token = localStorage.getItem('token');
+    const newWorkout = {
+      date: date,
+      exercises: workoutSession.exercises
+    }
+
+    console.log(newWorkout)
+
+    const response = await fetch('http://localhost:8080/api/workouts', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` // Including the token in the header
+      },
+      body: JSON.stringify(newWorkout)
     });
+
+    console.log(response);
   }
+
+    // if (response.ok) {
+    //     // const addedNote = await response.json();
+    //     // setNotes(prevNotes => [...prevNotes, addedNote.note]); // Ensure this matches the backend response
+    // }
+
+    // ENDED OFF HERE 
+    // console.log(workoutSession)
+    // setWorkouts(prevWorkouts => {
+    //     const updatedWorkouts = { ...prevWorkouts };
+    //     if (!updatedWorkouts[date]) {
+    //         updatedWorkouts[date] = [];
+    //     }
+    //     updatedWorkouts[date].push(workoutSession);
+    //     return updatedWorkouts;
+    // });
+
+/*
+    async function addNote() {
+        const token = localStorage.getItem('token'); // Retrieve the stored token
+
+
+        console.log(new Date().toLocaleString(undefined, options));
+
+        const newNote = {
+            title: "Title",
+            content: "Content",
+            date: new Date().toLocaleString(undefined, options) // Use ISO string for consistency
+        };
+        
+
+          
+        const response = await fetch('http://localhost:8080/api/notes', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` // Including the token in the header
+            },
+            body: JSON.stringify(newNote)
+        });
+
+        if (response.ok) {
+            const addedNote = await response.json();
+            setNotes(prevNotes => [...prevNotes, addedNote.note]); // Ensure this matches the backend response
+        }
+    }
+*/
+
 
   function removeWorkout(date, workoutIndex) {
     setWorkouts(prevWorkouts => {
@@ -102,66 +164,105 @@ function App() {
 
   return (
     <Router>
-      <Navbar/>
       <Routes>
         <Route
           path="/"
+          element={<Navigate to="/login" replace/>} 
+        />
+        <Route
+          path="/login"
           element={
             <Login/>
           }
         />
-          {/* <Route 
-            path="/" 
-            element={
-              <HomePage
-                workouts={workouts}
-              />
-            }
-          />
-          <Route 
-            path="/add-workout" 
-            element={
+        <Route
+          path="/register"
+          element={
+            <Register/>
+          }
+        />
+        <Route
+          path="/home"
+          element={
+            <>
+              <Navbar/>
+              <HomePage/>
+            </>
+          }
+        />
+        <Route 
+          path="/add-workout" 
+          element={
+            <>
+              <Navbar/>
               <AddWorkout 
                 clearWorkouts={clearWorkouts}
                 addWorkout={addWorkout}
               />
-            }          
-          />
-          <Route 
-            path="/view-workouts" 
-            element={
+            </>
+          }          
+        />
+        <Route 
+          path="/view-workouts" 
+          element={
+            <>
+              <Navbar/>
               <ViewWorkouts
                 workouts={workouts}
                 removeWorkout={removeWorkout}
                 clearWorkouts={clearWorkouts}
                 removeDateWorkouts={removeDateWorkouts}
               />
-            }
-          />
-          <Route 
-            path="/set-goal" 
-            element={
+            </>
+          }
+        />
+        <Route 
+          path="/set-goal" 
+          element={
+            <>
+              <Navbar/>
               <SetGoal
                 goals={goals}
                 addGoal={addGoal}
                 removeGoal={removeGoal}
                 clearGoals={clearGoals}
               />
-            }
-          />
-          <Route 
-            path="/manage-goals" 
-            element={
+            </>
+          }
+        />
+        <Route 
+          path="/manage-goals" 
+          element={
+            <>
+              <Navbar/>
               <ManageGoalsPage
                 clearGoals={clearGoals}
                 removeGoal={removeGoal}
                 goals={goals}
                 workouts={workouts}
               />
-            }
-          />
-          <Route path="/progress-stats" element={<ProgressStats/>}/>
-          <Route path="/progress-visualize" element={<ProgressVisualize/>}/> */}
+            </>
+          }
+        />
+        <Route 
+          path="/progress-stats" 
+          element={
+            <>
+              <Navbar/>
+              <ProgressStats/>
+            </>
+          }
+          
+        />
+        <Route 
+          path="/progress-visualize" 
+          element={
+            <>
+              <Navbar/>
+              <ProgressVisualize/>
+            </>
+          }
+        />
 
       </Routes>
     </Router>
