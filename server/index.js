@@ -58,7 +58,6 @@ app.post('/api/login', async (req, res) => {
         email: req.body.email, 
     })
 
-    // console.log(user);
     if (!user) {
         return res.json({ status: 'error', error: 'Invalid login' })
     }
@@ -68,8 +67,6 @@ app.post('/api/login', async (req, res) => {
         user.password
     )
 
-    // console.log(isPasswordValid);
-
     if (isPasswordValid) {
         const token = jwt.sign(
             { id: user._id, name: user.name, email: user.email },
@@ -78,14 +75,26 @@ app.post('/api/login', async (req, res) => {
     
         return res.json({ status: 'ok', user: token }); // Sending the token to the frontend
     } else {
-        console.log('as');
+
         return res.json({ status: 'error', user: false })
     }
 
 })
 
 app.get('/api/workouts', async (req, res) => {
-    console.log("get - api/workouts", req.body);
+
+    try {
+        const user = await User.findById(req.userId); // Use userId set by authenticateToken
+        if (!user) {
+            return res.status(404).json({ status: 'error', error: 'User not found' });
+        }
+
+        res.json({ status: 'ok', workouts: user.workouts});
+    } catch (error) {
+
+        res.status(500).json({ status: 'error', error: 'Internal server error' });
+    }
+
 })
 
 app.post('/api/workouts', async (req, res) => {
@@ -96,8 +105,6 @@ app.post('/api/workouts', async (req, res) => {
         if (!user) {
             return res.status(404).json({ status: 'error', error: 'User Not Found'})
         }
-        console.log(req.body);
-        console.log(req.body.exercises.sets)
 
         user.workouts.push(req.body)
         await user.save()

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom'
 import { Navigate } from "react-router-dom";
 
@@ -17,9 +17,32 @@ import "./index.css"
 
 
 function App() {
-  const [workouts, setWorkouts] = React.useState(() => (
-    JSON.parse(localStorage.getItem('workouts')) || {}
-  ))
+  const [workouts, setWorkouts] = useState([])
+
+  useEffect(() => {
+    async function fetchWorkouts() {
+        const token = localStorage.getItem('token'); // Retrieve the stored token
+        const response = await fetch('http://localhost:8080/api/workouts', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` // Including the token in the header
+            }
+        });
+        console.log(response);
+
+        if (response.ok) {
+            const fetchedWorkouts = await response.json(); // this wo rks
+            console.log('fetchedWorkouts: ', fetchedWorkouts);
+            setWorkouts(fetchedWorkouts)
+
+        } else {
+            alert('something went wrong')
+        }
+    }
+  
+    fetchWorkouts();
+  }, []);
 
   const [goals, setGoals] = React.useState(() => (
     JSON.parse(localStorage.getItem('goals')) || []
@@ -49,7 +72,6 @@ function App() {
       exercises: workoutSession.exercises
     }
 
-    console.log(newWorkout)
 
     const response = await fetch('http://localhost:8080/api/workouts', {
       method: 'POST',
@@ -60,55 +82,7 @@ function App() {
       body: JSON.stringify(newWorkout)
     });
 
-    console.log(response);
   }
-
-    // if (response.ok) {
-    //     // const addedNote = await response.json();
-    //     // setNotes(prevNotes => [...prevNotes, addedNote.note]); // Ensure this matches the backend response
-    // }
-
-    // ENDED OFF HERE 
-    // console.log(workoutSession)
-    // setWorkouts(prevWorkouts => {
-    //     const updatedWorkouts = { ...prevWorkouts };
-    //     if (!updatedWorkouts[date]) {
-    //         updatedWorkouts[date] = [];
-    //     }
-    //     updatedWorkouts[date].push(workoutSession);
-    //     return updatedWorkouts;
-    // });
-
-/*
-    async function addNote() {
-        const token = localStorage.getItem('token'); // Retrieve the stored token
-
-
-        console.log(new Date().toLocaleString(undefined, options));
-
-        const newNote = {
-            title: "Title",
-            content: "Content",
-            date: new Date().toLocaleString(undefined, options) // Use ISO string for consistency
-        };
-        
-
-          
-        const response = await fetch('http://localhost:8080/api/notes', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}` // Including the token in the header
-            },
-            body: JSON.stringify(newNote)
-        });
-
-        if (response.ok) {
-            const addedNote = await response.json();
-            setNotes(prevNotes => [...prevNotes, addedNote.note]); // Ensure this matches the backend response
-        }
-    }
-*/
 
 
   function removeWorkout(date, workoutIndex) {
