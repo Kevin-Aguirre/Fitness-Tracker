@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-function App() {
+function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
@@ -22,7 +22,6 @@ function App() {
 
         const data = await response.json();
         // console.log('data');
-        console.log(response);
         if (response.ok) {
             localStorage.setItem('token', data.user); // Storing the token
             alert('Login successful');
@@ -65,4 +64,4 @@ function App() {
     );
 }
 
-export default App;
+export default Login;

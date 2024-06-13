@@ -38,16 +38,19 @@ app.use('/api/workouts', authenticateToken)
 app.use('/api/goals', authenticateToken)
 
 app.post('/api/register', async (req, res) => {
-    // console.log(req.body);
     try {
         const newPassword = await bcrypt.hash(req.body.password, 10)
         await User.create({
             name: req.body.name,
             email: req.body.email,
             password: newPassword,
+            goals: [],
+            workouts: {}
         })
+
         res.json({ status: 'ok' })
     } catch (err) {
+        console.log(err);
         res.json({ status: 'error', error: 'Duplicate email' })
     }
 })
@@ -82,7 +85,9 @@ app.post('/api/login', async (req, res) => {
 
 })
 
-app.get('/api/workouts', async (req, res) => {
+// workouts ------------------------------------------------------------------------------------------------
+
+app.get('/api/workouts', async (req, res) => { // done
 
     try {
         const user = await User.findById(req.userId); // Use userId set by authenticateToken
@@ -98,44 +103,130 @@ app.get('/api/workouts', async (req, res) => {
 
 })
 
-app.post('/api/workouts', async (req, res) => {
-    console.log(req.body);
+app.post('/api/workouts', async (req, res) => { // done
     const userId = req.userId
+    const {date, exercises} = req.body
+
 
     try { 
         const user = await User.findById(userId)
         if (!user) {
             return res.status(404).json({ status: 'error', error: 'User Not Found'})
         }
+        
+        if (!user.workouts.has(date)) {
+            user.workouts.set(date, { workouts: [] });
+        }
 
-        user.workouts.push(req.body)
+
+        user.workouts.get(date).workouts.push({exercises})
+
+        
         await user.save()
         res.json({status: 'ok'})
     } catch (err) {
         res.json({status: "error", error: 'Could not Create Workout'})
     }
-
+    
 })
 
-app.get('/api/goals', async (req, res) => {
+app.delete('/api/workouts', async (req, res) => { // done
+    try {
+        const user = await User.findById(req.userId);
+        if (!user) {
+            return res.status(404).json({ status: 'error', error: 'User not found'})    
+        }
+        
+        user.workouts = []
+        await user.save()
+        res.json({status: 'ok'})
 
+    } catch (e) {
+        res.json({status: "error", error: 'Could not delete workouts    '})
+    }
+})
+
+app.delete('/api/workouts/:date', async (req, res) => { // done
+    try {
+        const { date } = req.params;
+
+        const user = await User.findById(req.userId);
+        if (!user) {
+            return res.status(404).json({ status: 'error', error: 'User not found'})    
+        }
+        
+        user.workouts.delete(date) 
+        await user.save()
+        res.json({status: 'ok'})
+
+    } catch (e) {
+        res.json({status: "error", error: 'Could not delete workouts    '})
+    }
+})
+
+app.delete('/api/workouts/:date/:workoutId', async (req, res) => {
+    try {
+        const { date, workoutId } = req.params;
+
+        const user = await User.findById(req.userId);
+        if (!user) {
+            return res.status(404).json({ status: 'error', error: 'User not found' });
+        }
+
+        let workoutDateEntry = user.workouts.get(date);
+        let oldWorkoutDateArr = workoutDateEntry.workouts;
+        console.log(oldWorkoutDateArr);
+        let newWorkoutDateArr = oldWorkoutDateArr.filter(workout => workout._id.toString() !== workoutId.toString());
+        console.log(newWorkoutDateArr);
+
+        
+        if (newWorkoutDateArr.length === 0) {
+            user.workouts.delete(date);
+        } else {
+            user.workouts.get(date).workouts = JSON.parse(JSON.stringify(newWorkoutDateArr))
+
+        }
+
+        await user.save();
+        res.json({ status: 'success', message: 'Workout deleted successfully' });
+    } catch (e) {
+        console.log('something went wrong', e);
+        res.status(500).json({ status: 'error', error: 'Something went wrong' });
+    }
+});
+
+
+
+
+
+
+app.put('/api/workouts/:workoutId', async (req, res) => { // not done
+    console.log("put - api/workouts/:workoutId", req.body);
+})
+
+
+
+// goals ------------------------------------------------------------------------------------------------
+
+app.get('/api/goals', async (req, res) => {
+    
     try {
         const user = await User.findById(req.userId); // Use userId set by authenticateToken
         if (!user) {
             return res.status(404).json({ status: 'error', error: 'User not found' });
         }
-
+        
         res.json({ status: 'ok', goals: user.goals});
     } catch (error) {
-
+        
         res.status(500).json({ status: 'error', error: 'Internal server error' });
     }
-
+    
 })
 
 app.post('/api/goals', async (req, res) => {
     const userId = req.userId
-
+    
     try { 
         const user = await User.findById(userId)
         if (!user) {
@@ -148,14 +239,6 @@ app.post('/api/goals', async (req, res) => {
     } catch (err) {
         res.json({status: "error", error: 'Could not Create Workout'})
     }
-})
-
-app.put('/api/workouts/:workoutId', async (req, res) => {
-    console.log("put - api/workouts/:workoutId", req.body);
-})
-
-app.delete('/api/workouts/:workoutId', async (req, res) => {
-    console.log("del - api/workouts/", req.body);
 })
 
 app.listen(8080, () => {

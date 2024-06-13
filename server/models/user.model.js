@@ -14,8 +14,6 @@ const ExerciseSchema = new mongoose.Schema({
 });
 
 const WorkoutSchema = new mongoose.Schema({
-    id: String,
-    date: String,
     exercises: [ExerciseSchema]
 });
 
@@ -32,20 +30,25 @@ const GoalSchema = new mongoose.Schema({
 });
 
 const UserSchema = new mongoose.Schema({
-    workouts: [WorkoutSchema],
-    goals: [GoalSchema],
     name: {
-        type: String, 
+        type: String,
         required: true
     },
     email: {
         type: String,
-        unique: true, 
+        unique: true,
         required: true
     },
     password: {
         type: String,
         required: true
+    },
+    goals: [GoalSchema],
+    workouts: {
+        type: Map,
+        of: new mongoose.Schema({
+            workouts: [WorkoutSchema]
+        })
     }
 });
 

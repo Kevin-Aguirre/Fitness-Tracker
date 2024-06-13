@@ -1,7 +1,6 @@
 import React from "react";
 
 export default function (props) {
-    console.log(props);
     function findRecentConsecutiveEntries(datesObject) {
         // Convert object keys to date array and sort in descending order
         if (Object.keys(datesObject).length === 0) {

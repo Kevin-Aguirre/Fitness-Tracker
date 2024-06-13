@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
-import {BrowserRouter as Router, Route, Routes} from 'react-router-dom'
-import { Navigate } from "react-router-dom";
+import {BrowserRouter as Router, Route, Routes, Navigate} from 'react-router-dom'
+import { jwtDecode } from "jwt-decode"
 
 import Login from "./components/Login.js"
 import Register from "./components/Register.js";
@@ -17,33 +17,46 @@ import "./index.css"
 
 
 function App() {
-  const [workouts, setWorkouts] = useState([])
-  const [goals, setGoals] = useState([])
+  const [workouts, setWorkouts] = useState([]);
+  const [goals, setGoals] = useState([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  useEffect(() => {
-    async function fetchWorkouts() {
-        const token = localStorage.getItem('token'); // Retrieve the stored token
-        const response = await fetch('http://localhost:8080/api/workouts', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}` // Including the token in the header
-            }
-        });
-
-        if (response.ok) {
-            const fetchedWorkouts = await response.json(); // this wo rks
-            console.log('fetchedWorkouts: ', fetchedWorkouts);
-            setWorkouts(fetchedWorkouts)
-
-        } else {
-            alert('something went wrong')
-        }
+  function checkToken() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setIsAuthenticated(false);
+      return;
     }
 
-    async function fetchGoals() {
+    try {
+      const decodedToken = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
+
+      if (decodedToken.exp < currentTime) {
+        // Token is expired
+        localStorage.removeItem('token');
+        setIsAuthenticated(false);
+      } else {
+        // Token is valid
+        setIsAuthenticated(true);
+      }
+    } catch (e) {
+      // Invalid token
+      localStorage.removeItem('token');
+      setIsAuthenticated(false);
+    }
+  }
+
+  async function fetchData() {
+    if (isAuthenticated) {
+      fetchWorkouts()
+      fetchGoals()
+    }
+  }
+
+  async function fetchWorkouts() {
       const token = localStorage.getItem('token'); // Retrieve the stored token
-      const response = await fetch('http://localhost:8080/api/goals', {
+      const response = await fetch('http://localhost:8080/api/workouts', {
           method: 'GET',
           headers: {
               'Content-Type': 'application/json',
@@ -52,19 +65,37 @@ function App() {
       });
 
       if (response.ok) {
-          const fetchedGoals = await response.json(); // this wo rks
-          setGoals(fetchedGoals)
-
+          const fetchedWorkouts = await response.json()
+          setWorkouts(fetchedWorkouts.workouts)
+          
       } else {
           alert('something went wrong')
       }
+  }
+
+  async function fetchGoals() {
+    const token = localStorage.getItem('token'); // Retrieve the stored token
+    const response = await fetch('http://localhost:8080/api/goals', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` // Including the token in the header
+        }
+    });
+
+    if (response.ok) {
+        const fetchedGoals = await response.json(); // this wo rks
+        setGoals(fetchedGoals)
+
+    } else {
+        alert('something went wrong')
     }
-  
-    fetchWorkouts();
-    fetchGoals();
-  }, []);
+  }
 
-
+  useEffect(() => {
+    checkToken();
+    fetchData();
+  }, [isAuthenticated]);
 
 
   // workout functions
@@ -72,14 +103,16 @@ function App() {
 
   // change this to post
   async function addWorkout(date, workoutSession) {
-    console.log(workoutSession)
-
     const token = localStorage.getItem('token');
-    const newWorkout = {
+
+    // console.log(workoutSession);
+
+    const data = {
       date: date,
       exercises: workoutSession.exercises
     }
 
+    console.log(data);
 
     const response = await fetch('http://localhost:8080/api/workouts', {
       method: 'POST',
@@ -87,9 +120,15 @@ function App() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}` // Including the token in the header
       },
-      body: JSON.stringify(newWorkout)
+      body: JSON.stringify(data)
     });
 
+
+    if (response.ok) {
+      fetchWorkouts();
+    } else {
+      alert('Failed to add workout');
+    }
   }
 
   // goal functions
@@ -104,40 +143,74 @@ function App() {
       },
       body: JSON.stringify(goalData)
     })
+
+    if (response.ok) {
+      fetchGoals();
+    } else {
+      alert('Failed to add goal');
+    }
   }
 
-
-  function removeWorkout(date, workoutIndex) {
-    setWorkouts(prevWorkouts => {
-        const updatedWorkouts = { ...prevWorkouts };
-
-        const updatedWorkoutsAtDate = [...updatedWorkouts[date]];
-
-        updatedWorkoutsAtDate.splice(workoutIndex, 1);
-
-        if (updatedWorkoutsAtDate.length === 0) {
-            delete updatedWorkouts[date];
-        } else {
-            updatedWorkouts[date] = updatedWorkoutsAtDate;
-        }
-
-        return updatedWorkouts;
-    });
-  }
-
-  function removeDateWorkouts(date) {
-    setWorkouts(prevWorkouts => {
-      const updatedWorkouts = {...prevWorkouts}
-      delete updatedWorkouts[date]
-      return updatedWorkouts
+  async function clearWorkouts() {
+    const token = localStorage.getItem('token')
+    
+    const response = await fetch('http://localhost:8080/api/workouts', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` 
+      },
+      
     })
+    
+    if (response.ok) {
+      fetchWorkouts()
+    } else {
+      alert('failed to delete workouts')
+    }
+  }
+
+
+  async function removeWorkout(date, workoutId) {
+    const token = localStorage.getItem('token')
+    
+    const response = await fetch(`http://localhost:8080/api/workouts/${date}/${workoutId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` 
+      },
+      
+    })
+    
+    if (response.ok) {
+      fetchWorkouts()
+    } else {
+      alert('failed to delete workouts')
+    }
+
+  }
+
+  async function removeDateWorkouts(date) {
+    const token = localStorage.getItem('token')
+
+    const response = await fetch(`http://localhost:8080/api/workouts/${date}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    })
+
+    if (response.ok) {
+      fetchWorkouts()
+    } else {
+      alert('failed to delete workouts ')
+    }
   }
 
 
 
-  function clearWorkouts() {
-    setWorkouts({})
-  }
 
 
   function removeGoal(goalIndex) {
