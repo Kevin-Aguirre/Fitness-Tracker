@@ -85,7 +85,7 @@ function App() {
 
     if (response.ok) {
         const fetchedGoals = await response.json(); // this wo rks
-        setGoals(fetchedGoals)
+        setGoals(fetchedGoals.goals)
 
     } else {
         alert('something went wrong')
@@ -131,26 +131,7 @@ function App() {
     }
   }
 
-  // goal functions
-  async function addGoal(goalData) {
-    const token = localStorage.getItem('token') 
-
-    const response = await fetch('http://localhost:8080/api/goals', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(goalData)
-    })
-
-    if (response.ok) {
-      fetchGoals();
-    } else {
-      alert('Failed to add goal');
-    }
-  }
-
+  
   async function clearWorkouts() {
     const token = localStorage.getItem('token')
     
@@ -169,6 +150,7 @@ function App() {
       alert('failed to delete workouts')
     }
   }
+
 
 
   async function removeWorkout(date, workoutId) {
@@ -209,9 +191,25 @@ function App() {
     }
   }
 
+  // goal functions
+  async function addGoal(goalData) {
+    const token = localStorage.getItem('token') 
 
+    const response = await fetch('http://localhost:8080/api/goals', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(goalData)
+    })
 
-
+    if (response.ok) {
+      fetchGoals();
+    } else {
+      alert('Failed to add goal');
+    }
+  }
 
   function removeGoal(goalIndex) {
     setGoals(prevGoals => {

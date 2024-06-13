@@ -113,11 +113,10 @@ function makeGoalStatement(goal) {
 
 
 
-export default function ManageGoalsPage (props) {
-    console.log(props);
+export default function ManageGoalsPage ({ clearGoals, removeGoal, goals, workouts }) {
 
-    const goalElements = props.goals.goals.map((goal, index) => {
-        const isFulfillied = isGoalFulfilled(goal, props.workouts)
+    const goalElements = goals.map((goal, index) => {
+        const isFulfillied = isGoalFulfilled(goal, workouts)
         let background;
         switch (isFulfillied) {
             case "fulfilled":
@@ -145,7 +144,7 @@ export default function ManageGoalsPage (props) {
                     <br/>
                     {isFulfillied}
                 </p>
-                <button type="button" onClick={() => props.removeGoal(index)}>
+                <button type="button" onClick={() => removeGoal(index)}>
                     <FontAwesomeIcon className="minus-icon-goal" icon={faMinus}></FontAwesomeIcon>
                 </button>
             </div>
@@ -155,11 +154,11 @@ export default function ManageGoalsPage (props) {
     return (
         <div className="parent">
             {
-                props.goals.length !==0
+                goals.length !==0
                 ?
                 <div className="goals-checklist">
                     {goalElements}
-                    <button onClick={props.clearGoals} type="button" className="cleargoalsbtn"> Delete All Goals</button>
+                    <button onClick={clearGoals} type="button" className="cleargoalsbtn"> Delete All Goals</button>
                 </div>
                 :
                 <div className="no-goals">You have no goals, start setting some!</div>
