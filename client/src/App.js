@@ -161,8 +161,7 @@ function App() {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}` 
-      },
-      
+      }
     })
     
     if (response.ok) {
@@ -211,16 +210,41 @@ function App() {
     }
   }
 
-  function removeGoal(goalIndex) {
-    setGoals(prevGoals => {
-      const updatedGoals = [...prevGoals]
-      updatedGoals.splice(goalIndex, 1);
-      return updatedGoals
+  async function removeGoal(goalId) { // need to write backend route
+    const token = localStorage.getItem('token')
+
+    const response = await fetch(`http://localhost:8080/api/goals/${goalId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`  
+      }
     })
+
+    if (response.ok) {
+      fetchGoals()
+    } else {
+      alert('failed to delete workouts')
+    }
   }
 
-  function clearGoals() {
-    setGoals([])
+  async function clearGoals() { // need to write backend route
+    const token = localStorage.getItem('token')
+    console.log('here');
+
+    const response = await fetch(`http://localhost:8080/api/goals`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    })
+
+    if (response.ok) {
+      fetchGoals()
+    } else {
+      alert('failed to delete workouts')
+    }
   }
 
   return (
@@ -247,7 +271,9 @@ function App() {
           element={
             <>
               <Navbar/>
-              <HomePage/>
+              <HomePage
+                workouts={workouts}
+              />
             </>
           }
         />

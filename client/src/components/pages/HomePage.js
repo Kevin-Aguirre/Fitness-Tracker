@@ -1,71 +1,139 @@
 import React from "react";
 
-export default function (props) {
-    function findRecentConsecutiveEntries(datesObject) {
-        // Convert object keys to date array and sort in descending order
-        if (Object.keys(datesObject).length === 0) {
-            return 0;
-        }
-
-        const sortedDates = Object.keys(datesObject).sort((a, b) => new Date(b) - new Date(a));
-    
-        let currentStreak = 1;
-        let mostRecentDate = new Date(sortedDates[0]);
-    
-        for (let i = 1; i < sortedDates.length; i++) {
-            const currentDate = new Date(sortedDates[i]);
-            const expectedDate = new Date(mostRecentDate);
-            expectedDate.setDate(expectedDate.getDate() - currentStreak);
-    
-            if (currentDate.getTime() === expectedDate.getTime()) {
-                currentStreak++;
-            } else {
-                break; // Streak is broken
-            }
-        }
-    
-        return currentStreak;
+function findRecentConsecutiveEntries(datesObject) {
+    if (Object.keys(datesObject).length === 0) {
+        return 0;
     }
 
-    function findConsecutiveWeeklyEntries(datesObject) {
-        // Helper function to get the start of the week (Monday) for a given date
-        function getStartOfWeek(date) {
-            const startOfWeek = new Date(date);
-            startOfWeek.setHours(0, 0, 0, 0); // normalize time to start of the day
-            const dayOfWeek = startOfWeek.getDay();
-            const diff = startOfWeek.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); // adjust when day is Sunday
-            startOfWeek.setDate(diff);
-            return startOfWeek;
-        }
+    const sortedDates = Object.keys(datesObject).sort((a, b) => new Date(b) - new Date(a));
+
+    let currentStreak = 1;
+    let mostRecentDate = new Date(sortedDates[0]);
+    const today = new Date();
     
-        // Convert object keys to date array and sort in descending order
-        const sortedDates = Object.keys(datesObject).sort((a, b) => new Date(b) - new Date(a));
-    
-        if (sortedDates.length === 0) {
-            return 0; // No entries, so no streak
-        }
-    
-        let currentStreak = 0;
-        let lastWeekStart = null;
-    
-        for (const dateStr of sortedDates) {
-            const date = new Date(dateStr);
-            const weekStart = getStartOfWeek(date);
-    
-            if (!lastWeekStart || weekStart.getTime() < lastWeekStart.getTime()) {
-                currentStreak++;
-                lastWeekStart = weekStart;
-            }
-        }
-    
-        return currentStreak;
+    if (mostRecentDate > today) {
+        return 0; // Entries in the future don't count
     }
+
+    for (let i = 1; i < sortedDates.length; i++) {
+        const currentDate = new Date(sortedDates[i]);
+        const expectedDate = new Date(mostRecentDate);
+        expectedDate.setDate(expectedDate.getDate() - currentStreak);
+
+        if (currentDate.getTime() === expectedDate.getTime()) {
+            currentStreak++;
+        } else {
+            break; // Streak is broken
+        }
+    }
+
+    return currentStreak;
+}
+
+function findConsecutiveWeeklyEntries(datesObject) {
+    function getStartOfWeek(date) {
+        const startOfWeek = new Date(date);
+        startOfWeek.setHours(0, 0, 0, 0); // normalize time to start of the day
+        const dayOfWeek = startOfWeek.getDay();
+        const diff = startOfWeek.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); // adjust when day is Sunday
+        startOfWeek.setDate(diff);
+        return startOfWeek;
+    }
+
+    const sortedDates = Object.keys(datesObject).sort((a, b) => new Date(b) - new Date(a));
+
+    if (sortedDates.length === 0) {
+        return 0;
+    }
+
+    let currentStreak = 0;
+    let lastWeekStart = null;
+    const today = new Date();
+    const currentWeekStart = getStartOfWeek(today);
+
+    for (const dateStr of sortedDates) {
+        const date = new Date(dateStr);
+        const weekStart = getStartOfWeek(date);
+
+        if (weekStart > currentWeekStart) {
+            continue; // Ignore entries in future weeks
+        }
+
+        if (!lastWeekStart || weekStart.getTime() < lastWeekStart.getTime()) {
+            currentStreak++;
+            lastWeekStart = weekStart;
+        }
+    }
+
+    return currentStreak;
+}
+
+export default function ({ workouts }) {
+    // function findRecentConsecutiveEntries(datesObject) {
+    //     // Convert object keys to date array and sort in descending order
+    //     if (Object.keys(datesObject).length === 0) {
+    //         return 0;
+    //     }
+
+    //     const sortedDates = Object.keys(datesObject).sort((a, b) => new Date(b) - new Date(a));
+    
+    //     let currentStreak = 1;
+    //     let mostRecentDate = new Date(sortedDates[0]);
+    
+    //     for (let i = 1; i < sortedDates.length; i++) {
+    //         const currentDate = new Date(sortedDates[i]);
+    //         const expectedDate = new Date(mostRecentDate);
+    //         expectedDate.setDate(expectedDate.getDate() - currentStreak);
+    
+    //         if (currentDate.getTime() === expectedDate.getTime()) {
+    //             currentStreak++;
+    //         } else {
+    //             break; // Streak is broken
+    //         }
+    //     }
+    
+    //     return currentStreak;
+    // }
+
+    // function findConsecutiveWeeklyEntries(datesObject) {
+    //     // Helper function to get the start of the week (Monday) for a given date
+    //     function getStartOfWeek(date) {
+    //         const startOfWeek = new Date(date);
+    //         startOfWeek.setHours(0, 0, 0, 0); // normalize time to start of the day
+    //         const dayOfWeek = startOfWeek.getDay();
+    //         const diff = startOfWeek.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); // adjust when day is Sunday
+    //         startOfWeek.setDate(diff);
+    //         return startOfWeek;
+    //     }
+    
+    //     // Convert object keys to date array and sort in descending order
+    //     const sortedDates = Object.keys(datesObject).sort((a, b) => new Date(b) - new Date(a));
+    
+    //     if (sortedDates.length === 0) {
+    //         return 0; // No entries, so no streak
+    //     }
+    
+    //     let currentStreak = 0;
+    //     let lastWeekStart = null;
+    
+    //     for (const dateStr of sortedDates) {
+    //         const date = new Date(dateStr);
+    //         const weekStart = getStartOfWeek(date);
+    
+    //         if (!lastWeekStart || weekStart.getTime() < lastWeekStart.getTime()) {
+    //             currentStreak++;
+    //             lastWeekStart = weekStart;
+    //         }
+    //     }
+    
+    //     return currentStreak;
+    // }
 
     let val 
     let val2
-    if (props.workouts) {
-        val = findRecentConsecutiveEntries(props.workouts)
-        val2 = findConsecutiveWeeklyEntries(props.workouts)
+    if (workouts) {
+        val = findRecentConsecutiveEntries(workouts)
+        val2 = findConsecutiveWeeklyEntries(workouts)
     } else {
         val = "ERROR"
         val2 = "ERROR"

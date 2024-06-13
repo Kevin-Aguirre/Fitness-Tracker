@@ -232,12 +232,49 @@ app.post('/api/goals', async (req, res) => {
         if (!user) {
             return res.status(404).json({ status: 'error', error: 'User Not Found'})
         }
-        console.log(req.body);
+
         user.goals.push(req.body)
         await user.save()
         res.json({status: 'ok'}) 
     } catch (err) {
         res.json({status: "error", error: 'Could not Create Workout'})
+    }
+})
+
+app.delete('/api/goals', async (req, res) => {
+    try {
+        const user = await User.findById(req.userId)
+        if (!user) {
+            return res.status(404).json({ status: 'error', error: 'User Not Found'})
+        }
+        
+        user.goals = []
+        await user.save()
+        res.json({status: 'ok'})
+        
+    } catch (e) {
+        res.json({status: 'error', error: 'could not delete goals'})
+    }
+})
+
+app.delete('/api/goals/:goalId', async (req, res) => {
+    console.log('made it');
+    try {
+        const { goalId } = req.params;
+        
+        const user = await User.findById(req.userId)
+        if (!user) {
+            return res.status(404).json({ status: 'error', error: 'User Not Found'})
+        }
+        
+        const oldGoals = JSON.parse(JSON.stringify(user.goals))
+        const newGoals = oldGoals.filter(goal => goal._id !== goalId)
+        user.goals = JSON.parse(JSON.stringify(newGoals))
+        await user.save()
+        res.json({status: 'ok'})
+        console.log('finished');
+    } catch (e) {
+        res.json({status: 'error', error: 'could not delete goals'})
     }
 })
 

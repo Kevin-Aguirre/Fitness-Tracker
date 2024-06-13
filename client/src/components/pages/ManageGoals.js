@@ -116,6 +116,7 @@ function makeGoalStatement(goal) {
 export default function ManageGoalsPage ({ clearGoals, removeGoal, goals, workouts }) {
 
     const goalElements = goals.map((goal, index) => {
+        console.log(goal);
         const isFulfillied = isGoalFulfilled(goal, workouts)
         let background;
         switch (isFulfillied) {
@@ -144,7 +145,7 @@ export default function ManageGoalsPage ({ clearGoals, removeGoal, goals, workou
                     <br/>
                     {isFulfillied}
                 </p>
-                <button type="button" onClick={() => removeGoal(index)}>
+                <button type="button" onClick={() => removeGoal(goal._id)}>
                     <FontAwesomeIcon className="minus-icon-goal" icon={faMinus}></FontAwesomeIcon>
                 </button>
             </div>
