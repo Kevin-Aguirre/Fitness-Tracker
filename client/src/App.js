@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react"
 import {BrowserRouter as Router, Route, Routes, Navigate} from 'react-router-dom'
-const { jwtDecode } = require('jwt-decode');
-
 import Login from "./components/Login.js"
 import Register from "./components/Register.js";
 import Navbar from "./components/Navbar.js";
@@ -12,8 +10,10 @@ import SetGoal from "./components/pages/SetGoal.js"
 import ManageGoalsPage from "./components/pages/ManageGoals.js";  
 import ProgressStats from "./components/pages/ProgressStats.js"
 import ProgressVisualize from "./components/pages/ProgressVisualize.js"
-
 import "./index.css"
+const { jwtDecode } = require('jwt-decode');
+
+
 
 
 function App() {
