@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react"
 import {BrowserRouter as Router, Route, Routes, Navigate} from 'react-router-dom'
 import { jwtDecode } from "jwt-decode"
+import { useNavigate } from 'react-router-dom'
+
 
 import Login from "./components/Login.js"
 import Register from "./components/Register.js";
@@ -17,10 +19,19 @@ import "./index.css"
 
 
 function App() {
+  
+  console.log('first');
   const [workouts, setWorkouts] = useState([]);
   const [goals, setGoals] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
+  
+  function handleLogout() {
+    localStorage.removeItem('token')
+    setIsAuthenticated(false)
+    setWorkouts([])
+    setGoals([])
+  }
+  
   function checkToken() {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -257,7 +268,9 @@ function App() {
         <Route
           path="/login"
           element={
-            <Login/>
+            <Login
+              isAuthenticated={isAuthenticated}
+            />
           }
         />
         <Route
@@ -270,7 +283,9 @@ function App() {
           path="/home"
           element={
             <>
-              <Navbar/>
+              <Navbar
+ handleLogout={handleLogout}
+/>
               <HomePage
                 workouts={workouts}
               />
@@ -281,7 +296,9 @@ function App() {
           path="/add-workout" 
           element={
             <>
-              <Navbar/>
+              <Navbar
+ handleLogout={handleLogout}
+/>
               <AddWorkout 
                 clearWorkouts={clearWorkouts}
                 addWorkout={addWorkout}
@@ -293,7 +310,9 @@ function App() {
           path="/view-workouts" 
           element={
             <>
-              <Navbar/>
+              <Navbar
+ handleLogout={handleLogout}
+/>
               <ViewWorkouts
                 workouts={workouts}
                 removeWorkout={removeWorkout}
@@ -307,7 +326,9 @@ function App() {
           path="/set-goal" 
           element={
             <>
-              <Navbar/>
+              <Navbar
+ handleLogout={handleLogout}
+/>
               <SetGoal
                 goals={goals}
                 addGoal={addGoal}
@@ -321,7 +342,9 @@ function App() {
           path="/manage-goals" 
           element={
             <>
-              <Navbar/>
+              <Navbar
+ handleLogout={handleLogout}
+/>
               <ManageGoalsPage
                 clearGoals={clearGoals}
                 removeGoal={removeGoal}
@@ -335,7 +358,9 @@ function App() {
           path="/progress-stats" 
           element={
             <>
-              <Navbar/>
+              <Navbar
+ handleLogout={handleLogout}
+/>
               <ProgressStats/>
             </>
           }
@@ -345,7 +370,9 @@ function App() {
           path="/progress-visualize" 
           element={
             <>
-              <Navbar/>
+              <Navbar
+ handleLogout={handleLogout}
+/>
               <ProgressVisualize/>
             </>
           }
