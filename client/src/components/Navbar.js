@@ -22,12 +22,9 @@ export default function Navbar ({ handleLogout }) {
                 <Link to="/view-workouts">View Workouts</Link>
                 <Link to="/set-goal">Set Goal</Link>
                 <Link to="/manage-goals">Manage Goals</Link>
-                <button onClick={logout}>
+                <button className="navbar--button-logout" onClick={logout}>
                     Logout
                 </button>
-                {/* <Link to="/progress-stats">Stats</Link>
-                <Link to="/progress-visualize">Graphs</Link> */}
-
             </div>
         </nav>
     )

@@ -20,9 +20,9 @@ body {
   align-items: center;
   justify-content: space-between;
   background-color: #b3afaf;
-  color: white;
+  color: black;
   display: flex;
-  
+  padding: 8px 0px;
 }
 
 .navbar h1 {
@@ -516,23 +516,63 @@ body {
   padding: 20px 0px;
 }
 
+/* login and register */
+
 .form {
   background-color: lightgray;
   display: flex;
-  margin: 50px auto;
-  align-items: center;
-  justify-content: center;
-  width: 50%;
-  padding: 4
-  0px;
   flex-direction: column;
+  margin: 50px auto;
+  /* align-items: center;
+  justify-content: center; */
+  width: 50%;
+  padding: 40px;
+}
+
+.form--label {
+  font-weight: bold;
+  font-size: 24px;
+  padding-right: 10px;
+}
+
+.form-elem {
+  margin: 4px 0px;
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
 }
 
 .title {
   font-size: 60px;
-  margin: 20px;
+  text-align: center;
+  margin: 20px 0px 80px 0px;
 }
 
 .field {
+  width: 70%;
+}
+
+.form--button {
+  background-color: rgb(115, 128, 202);
+  font-size: 22px;
   width: 100%;
+  padding: 2px;
+  margin: 10px 0px 20px 0px;
+  color: white
+}
+
+.navbar--button-logout, .navbar--button-login {
+  font-size: 16px;
+  padding: 10px 14px;
+  margin: 2px 10px;
+}
+
+.navbar--button-logout {
+  background-color: rgb(216, 108, 108);
+  color: white;
+}
+
+.navbar--button-login {
+  background-color: rgb(98, 199, 98);
+  color: white;   
 }

@@ -46,23 +46,32 @@ function Login({isAuthenticated}) {
         <div className='form'>
             <h1 className='title'>Login</h1>
             <form onSubmit={handleSubmit}>
-                <input
-                    className='field'
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    type="email"
-                    placeholder="Email"
-                />
-                <br />
-                <input
-                    className='field'
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    type="password"
-                    placeholder="Password"
-                />
-                <br />
-                <input className='button' type="submit" value="Login" />
+                <div className='form-elem'>
+                    <label className='form--label'>
+                        Email:
+                    </label>
+                    <input
+                        className='field'
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        type="email"
+                        placeholder="Email"
+                    />
+                </div>
+                <div className='form-elem'>
+                    <label className='form--label'>
+                        Password:
+                    </label>
+                    <input
+                        className='field'
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        type="password"
+                        placeholder="Password"
+                    />
+                </div>
+                <input className='form--button' type="submit" value="Login" />
+                
                 <hr></hr>
                 <h3 className='small-title'> Don't have an account yet?</h3>
                 <p className='register-link' onClick={goToRegister}>Register Here</p>

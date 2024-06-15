@@ -7,8 +7,28 @@ function Register () {
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
     
     async function handleSubmit(event) {
+        if (!name) {
+            alert('name cannot be empty')
+            return;
+        }
+
+        if (!email) {
+            alert('email cannot be empty')
+            return;
+        }
+
+        if (!password) {
+            alert('password cannot be empty')
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            alert('password and confirm password do not match.')
+        }
+
         event.preventDefault();
         const response = await fetch('http://localhost:8080/api/register', {
             method: "POST",
@@ -40,34 +60,58 @@ function Register () {
         navigate('/login')
     }
     return (
-        <div>
+        <div className="form">
             <h1 className='title'>Register</h1>
             <form onSubmit={handleSubmit}>
-                <input 
-                    className='field'
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    type="text" 
-                    placeholder="Name" 
-                />
-                <br/>
-                <input 
-                    className='field'
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)} 
-                    type="email" 
-                    placeholder='Email'
-                />
-                <br/>
-                <input 
-                    className='field'
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    type="password" 
-                    placeholder="Password" 
-                />
-                <br/>
-                <input className='button' type="submit" value="Register"/>
+                <div className="form-elem">
+                    <label className='form--label'>
+                        Name:
+                    </label>
+                    <input 
+                        className='field'
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        type="text" 
+                        placeholder="Name" 
+                    />
+                </div>
+                <div className="form-elem">
+                    <label className='form--label'>
+                        Email:
+                    </label>
+                    <input 
+                        className='field'
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)} 
+                        type="email" 
+                        placeholder='Email'
+                    />
+                </div>
+                <div className="form-elem">
+                    <label className="form--label">
+                        Password: 
+                    </label>
+                    <input 
+                        className='field'
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        type="password" 
+                        placeholder="Password" 
+                    />
+                </div>
+                <div className="form-elem">
+                    <label className="form--label">
+                        Confirm Password: 
+                    </label>
+                    <input 
+                        className='field'
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        type="password" 
+                        placeholder="Confirm Password" 
+                    />
+                </div>
+                <input className='form--button' type="submit" value="Register"/>
                 <hr></hr>
                 <h3 className='small-title'>Already have an account?</h3>
                 <p className='register-link' onClick={goToLogin}>Login Here</p>

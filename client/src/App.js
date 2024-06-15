@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import {BrowserRouter as Router, Route, Routes, Navigate} from 'react-router-dom'
 import Login from "./components/Login.js"
 import Register from "./components/Register.js";
+import EmptyNavbar from "./components/EmptyNavbar.js"
 import Navbar from "./components/Navbar.js";
 import HomePage from "./components/pages/HomePage.js"
 import AddWorkout from "./components/pages/AddWorkout.js"
@@ -266,15 +267,21 @@ function App() {
         <Route
           path="/login"
           element={
-            <Login
-              isAuthenticated={isAuthenticated}
-            />
+            <>
+              <EmptyNavbar/>
+              <Login
+                isAuthenticated={isAuthenticated}
+              />
+            </>
           }
         />
         <Route
           path="/register"
           element={
-            <Register/>
+            <>
+              <EmptyNavbar/>
+              <Register/>
+            </>
           }
         />
         <Route
@@ -282,8 +289,8 @@ function App() {
           element={
             <>
               <Navbar
- handleLogout={handleLogout}
-/>
+                handleLogout={handleLogout}
+              />
               <HomePage
                 workouts={workouts}
               />
@@ -295,8 +302,8 @@ function App() {
           element={
             <>
               <Navbar
- handleLogout={handleLogout}
-/>
+                handleLogout={handleLogout}
+              />
               <AddWorkout 
                 clearWorkouts={clearWorkouts}
                 addWorkout={addWorkout}
@@ -309,8 +316,8 @@ function App() {
           element={
             <>
               <Navbar
- handleLogout={handleLogout}
-/>
+                handleLogout={handleLogout}
+              />
               <ViewWorkouts
                 workouts={workouts}
                 removeWorkout={removeWorkout}
@@ -325,8 +332,8 @@ function App() {
           element={
             <>
               <Navbar
- handleLogout={handleLogout}
-/>
+               handleLogout={handleLogout}
+              />
               <SetGoal
                 goals={goals}
                 addGoal={addGoal}
@@ -341,8 +348,8 @@ function App() {
           element={
             <>
               <Navbar
- handleLogout={handleLogout}
-/>
+                handleLogout={handleLogout}
+              />
               <ManageGoalsPage
                 clearGoals={clearGoals}
                 removeGoal={removeGoal}
@@ -357,8 +364,8 @@ function App() {
           element={
             <>
               <Navbar
- handleLogout={handleLogout}
-/>
+                handleLogout={handleLogout}
+              />
               <ProgressStats/>
             </>
           }
@@ -369,8 +376,8 @@ function App() {
           element={
             <>
               <Navbar
- handleLogout={handleLogout}
-/>
+                handleLogout={handleLogout}
+              />
               <ProgressVisualize/>
             </>
           }
