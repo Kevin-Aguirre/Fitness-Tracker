@@ -316,15 +316,14 @@ body {
 } 
 
 .view--exercise-entry {
-  background-color: #F2F3D9;
-  border: 1px solid gray;
+  background-color: rgb(255, 255, 255);
   border-radius: 30px;
   padding: 10px;
   text-align: center;
 }
 
 .view--set {
-  background-color: #eec1ac ;
+  background-color: #dadada ;
   border-radius: 10px;
   margin: 10px;
   display: flex;

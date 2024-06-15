@@ -35,7 +35,7 @@ export default function WorkoutsByDate({ _id, date, workouts, removeDateWorkouts
                 <div className="workout--info">
                     <div className="space"></div>
                     <h1 className="view--workout-index">Workout #{workoutIndex + 1}</h1>
-                    <button type="button" className="remove-workout" onClick={() => {removeWorkout(date, workout._id) }}>Xasd</button>
+                    <button type="button" className="remove-workout" onClick={() => {removeWorkout(date, workout._id) }}>X</button>
                 </div>
                 <div className="workout-grid">
                     {workout.exercises.map((exercise, exerciseIndex) => (
