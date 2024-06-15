@@ -7,6 +7,7 @@ test
 ## Features 
 
 * Adding Workouts
+![alt text](https://github.com/Kevin-Aguirre/Fitness-Tracker/documentation/add-workout.png?raw=true)
 * Manage Existing Workouts 
 * Add Goals
 * Automatic Progress Evaluation 
