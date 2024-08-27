@@ -15,8 +15,6 @@ This project is a workout tracker made using React.js, Node.js, and MongoDB. It 
 ![Alt text](./documentation/add-workout.png)
 ![Alt text](./documentation/view-workouts.png)
 
-### Video Demo
-[Video](https://commonmark.org/help/)
 
 ## Portfolio Properties
 - showOnPortfolio = true
